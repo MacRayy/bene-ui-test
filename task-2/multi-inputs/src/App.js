@@ -13,8 +13,11 @@ class App extends Component {
 	}
 
 
-	addNewInput() {
-		console.log('alma')
+	addNewInput(event) {
+		this.setState({
+			inputFields: [...this.state.inputFields, '']
+		})
+		console.log(this.state)
 	}
 
 	render() {
@@ -28,7 +31,7 @@ class App extends Component {
 								return (
 									<div key={index}>
 										<label>test attribute</label>
-										<input type="text" name="first" onClick={this.addNewInput} defaultValue={input}/>
+										<input className={`input-${index}`} type="text" name="input" onClick={this.addNewInput.bind(this)} defaultValue={input}/>
 									</div>
 								)
 							})
