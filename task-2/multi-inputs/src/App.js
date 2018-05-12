@@ -2,8 +2,8 @@ import React, { Component } from 'react'
 import './App.css'
 
 class App extends Component {
-	constructor() {
-		super()
+	constructor(props) {
+		super(props)
 		this.state = {
 			inputFields: [
 				'first',
@@ -15,14 +15,28 @@ class App extends Component {
 
 
 	addNewInput() {
-		this.setState({ inputFields: [...this.state.inputFields, ''] })
-		console.log(this.state)
+		this.setState({ inputFields: [ ...this.state.inputFields, '' ] })
+	}
+
+	onBlurUpdate() {
+		this.saveInputs()
+		this.forceUpdate()
+	}
+
+	onDelete(event) {
+		const inputFields = this.state.inputFields
+
+		const updatedInputs = inputFields.filter( field => {
+			if (field !== event.target.classList[2]) {
+				return field
+			}
+		})
+
+		this.setState({ inputFields: updatedInputs })
 	}
 
 	saveInputs() {
-		const inputValues = Array.from(document.querySelectorAll('.input')).map((field, index) => {
-			return field.value
-		})
+		const inputValues = Array.from( document.querySelectorAll('.input') ).map( field => field.value )
 		this.setState({ inputFields: inputValues })
 
 		console.info(inputValues)
@@ -32,23 +46,34 @@ class App extends Component {
 	render() {
 		return (
 			<div className="App">
-				<h1>Test</h1>
-				<main className="input-container">
-					{
-						this.state.inputFields.map((input, index) => {
-							return (
-								<div key={index}>
-									<label>test attribute</label>
-									<input className={`input input-${index}`} type="text" name="input" onClick={this.addNewInput.bind(this)} defaultValue={input}/>
-								</div>
-							)
-						})
-					}
-				</main>
-				<aside>
-					<button>cancel</button>
-					<button onClick={this.saveInputs.bind(this)}>save</button>
-				</aside>
+				<div className="input-container">
+					<h1 className="h1">Test</h1>
+					<main className="form">
+						{
+							this.state.inputFields.map((input, index) => {
+								return (
+									<div className="input-wrapper" key={index}>
+										<input
+											id={ `input-${index}` }
+											className="input"
+											name="input"
+											type="text"
+											defaultValue={input}
+											onClick={ this.addNewInput.bind(this) }
+											onBlur={this.onBlurUpdate.bind(this)}
+										/>
+										<label htmlFor={ `input-${index}` } className="input-label">test attribute</label>
+										<button className={ `btn btn--delete ${input}`} onClick={ this.onDelete.bind(this) }></button>
+									</div>
+								)
+							})
+						}
+					</main>
+					<aside className="sidebar">
+						<button className="btn">cancel</button>
+						<button className="btn btn--blue" onClick={ this.saveInputs.bind(this) }>save</button>
+					</aside>
+				</div>
 			</div>
 		)
 	}
